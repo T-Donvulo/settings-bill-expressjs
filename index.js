@@ -1,5 +1,4 @@
 const express = require('express');
-
 const bodyParser = require('body-parser');
 const settingsBill = require('./settings-factory');
 const exphbs = require('express-handlebars');
@@ -15,38 +14,24 @@ app.use(bodyParser.json())
 
 app.get('/', function (req, res) {
 
-    //console.log(settingsBill.allTotal() )
-    console.log(settings.getSmsCost())
     res.render('index', {
         callCost: settings.getCallCost(),
         smsCost: settings.getSmsCost(),
         theWarningLevel: settings.getWarningLevel(),
-        theWarningLevel: settings.getCriticalLevel(),
+        theCriticalLevel: settings.getCriticalLevel(),
         allTotal: settings.allTotal(),
+        color : settings.totalClassName()
+       
     });
-//console.log(settings.getCriticalLevel())
 });
 
 app.post('/settings', function (req, res) {
-    // let callCost = req.body.callCost
-    // let smsCost = req.body.smsCost
-    // let warning = req.body.warningLevel
-    // let critical = req.body.criticalLevel
 
-    // let set = {
+
     settings.setCallCost({callCost: req.body.callCost}),
         settings.setSmsCost1({smsCost: req.body.smsCost}),
         settings.setWarningLevel({warningLevel: req.body.warningLevel}),
         settings.setCriticalLevel({criticalLevel: req.body.criticalLevel})
-    // }
-
-    // let change = {
-    //     callCost,   
-    //     smsCost,
-    //     warning,
-    //     critical
-    // }
-    console.log(  settings.setSmsCost1({smsCost: req.body.smsCost})); 
 
     res.redirect('/');
 
@@ -56,7 +41,6 @@ app.post('/settings', function (req, res) {
 app.post('/action', function (req, res) {
 
     settings.recordAction(req.body.actionType)
-   // console.log(settings.totals(req.body.actionType));
 
     res.redirect('/');
 

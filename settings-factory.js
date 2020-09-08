@@ -21,7 +21,7 @@ module.exports = function BillWithSettings() {
     }
 
     function getSmsCost() {
-        return  smsCost ;
+        return smsCost;
     }
 
     function setSmsCost1(setSms) {
@@ -52,24 +52,27 @@ module.exports = function BillWithSettings() {
     }
 
     function checkCriticalLevel() {
-        return getTotalCost() >= getCriticalLevel();
+        return grandTotal() >= theCriticalLevel;
     }
 
     function recordAction(action) {
+        if (action) {
+            if (!checkCriticalLevel()) {
+                let cost = 0;
+                if (action === 'sms') {
+                    cost = smsCost;
+                }
+                else if (action === 'call') {
+                    cost = callCost;
+                }
 
-        let cost = 0;
-        if (action === 'sms') {
-            cost = smsCost;
+                actionList.push({
+                    type: action,
+                    cost,
+                    timestamp: new Date()
+                });
+            }
         }
-        else if (action === 'call') {
-            cost = callCost;
-        }
-
-        actionList.push({
-            type: action,
-            cost,
-            timestamp: new Date()
-        });
     }
 
     function actions() {
@@ -113,7 +116,7 @@ module.exports = function BillWithSettings() {
         return {
             smsCostTotal,
             callCostTotal,
-            grandTotal: grandTotal()
+            grandTotal: grandTotal().toFixed(2)
         }
     }
     function getTotalCost() {
@@ -130,11 +133,11 @@ module.exports = function BillWithSettings() {
 
     function totalClassName() {
 
-        if (getGrandTotal() >= getCriticalLevel()) {
+        if (grandTotal() >= theCriticalLevel) {
             return "danger";
         }
 
-        if (getGrandTotal() >= getWarningLevel()) {
+        if (grandTotal() >= theWarningLevel && grandTotal() < theCriticalLevel) {
             return "warning";
         }
 
