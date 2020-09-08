@@ -1,8 +1,8 @@
 module.exports = function BillWithSettings() {
-    var theCallCost = 0;
-    var theSmsCost = 0;
-    var theWarningLevel = 0;
-    var theCriticalLevel = 0;
+    var callCost;
+    var smsCost;
+    var theWarningLevel;
+    var theCriticalLevel;
 
     var callCostTotal = 0;
     var smsCostTotal = 0;
@@ -10,33 +10,59 @@ module.exports = function BillWithSettings() {
 
     var actionList = []
 
-    function setCallCost(callCost) {
-        theCallCost = callCost;
-    }
-    function getCallCost() {
-        return {call: theCallCost}
-        
-    }
-    function setSmsCost1(smsCost) {
-        theSmsCost = smsCost;
+
+    function setCallCost(set) {
+        return callCost = Number(set.callCost)
     }
 
+    function getCallCost() {
+        return callCost;
+
+    }
 
     function getSmsCost() {
-        return {sms: theSmsCost}
+        return  smsCost ;
     }
 
-    function actions(){
-return actionList;
+    function setSmsCost1(setSms) {
+        smsCost = Number(setSms.smsCost)
     }
-        function recordAction(action) {
+
+
+    function getGrandTotal() {
+        return callCostTotal + smsCostTotal;
+
+    }
+
+    function setWarningLevel(item) {
+        theWarningLevel = item.warningLevel;
+    }
+
+    function getWarningLevel() {
+        return theWarningLevel
+    }
+
+    function setCriticalLevel(item) {
+        theCriticalLevel = item.criticalLevel;
+    }
+
+    function getCriticalLevel() {
+        return theCriticalLevel
+
+    }
+
+    function checkCriticalLevel() {
+        return getTotalCost() >= getCriticalLevel();
+    }
+
+    function recordAction(action) {
 
         let cost = 0;
-        if (action === 'sms'){
-            cost = theSmsCost;
+        if (action === 'sms') {
+            cost = smsCost;
         }
-        else if (action === 'call'){
-            cost = theCallCost;
+        else if (action === 'call') {
+            cost = callCost;
         }
 
         actionList.push({
@@ -46,38 +72,52 @@ return actionList;
         });
     }
 
+    function actions() {
+        return actionList;
+    }
 
-   
-  
+    function actionsFor(type) {
+        const filteredActions = [];
 
-    function getGrandTotal() {
-        return callCostTotal + smsCostTotal;
+        // loop through all the entries in the action list 
+        for (let index = 0; index < actionList.length; index++) {
+            const action = actionList[index];
+            // check this is the type we are doing the total for 
+            if (action.type === type) {
+                // add the action to the list
+                filteredActions.push(action);
+            }
+        }
+        return filteredActions;
+    }
 
+    function totals(bill) {
+        let total = 0;
+        for (let index = 0; index < actionList.length; index++) {
+            const action = actionList[index];
+            if (action.type === bill) {
+                total += action.cost;
+            }
+        }
+        return total;
+    }
+
+    function grandTotal() {
+        return totals('call') + totals('sms')
     }
 
 
-    function setWarningLevel(warningLevel) {
-        theWarningLevel = warningLevel;
+    function allTotal() {
+        callCostTotal = totals('call').toFixed(2)
+        smsCostTotal = totals('sms').toFixed(2)
+        return {
+            smsCostTotal,
+            callCostTotal,
+            grandTotal: grandTotal()
+        }
     }
-
-    function getWarningLevel() {
-        return {warning: theWarningLevel}
-    }
-
-    function setCriticalLevel(criticalLevel) {
-        theCriticalLevel = criticalLevel;
-    }
-
-    function checkCriticalLevel() {
-        return getTotalCost() >= getCriticalLevel();
-    }
-    function getCriticalLevel() {
-        return {critical: theCriticalLevel}
-
-    }
-
     function getTotalCost() {
-      sum = callCostTotal + smsCostTotal;
+        sum = callCostTotal + smsCostTotal;
         return sum;
     }
 
@@ -101,27 +141,25 @@ return actionList;
 
     }
 
-    function totals(){
-        
-    }
-
     return {
         setCallCost,
         getCallCost,
-        setSmsCost1,
         getSmsCost,
+        setSmsCost1,
         setWarningLevel,
         getWarningLevel,
         setCriticalLevel,
-        recordAction,
-        checkCriticalLevel,
         getCriticalLevel,
-        getGrandTotal,
+        checkCriticalLevel,
+        recordAction,
+        actionsFor,
+        totals,
+        allTotal,
         getTotalCost,
         getTotalCallCost,
         getTotalSmsCost,
-        totalClassName
-
+        totalClassName,
+        actions
     }
 
-}
+} 
