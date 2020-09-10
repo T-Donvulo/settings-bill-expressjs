@@ -55,13 +55,13 @@
               <h5>Settings</h5>
               <form action="/settings" method="POST">
               <label for="exampleEmailInput">Call cost</label>
-              <input class="u-full-width callCostSetting" type="number" step="0.1" name="callCost" value="{{callCost}}" placeholder="eg. 2.55">
+              <input class="u-full-width callCostSetting" type="number" step="0.1" name="callCost" value="{{setting.callCost}}" placeholder="eg. 2.55">
               <label for="exampleEmailInput">SMS cost</label>
-              <input class="u-full-width smsCostSetting" type="number" step="0.1" name="smsCost" value= "{{smsCost}}" placeholder="eg. 0.65" >
+              <input class="u-full-width smsCostSetting" type="number" step="0.1" name="smsCost" value= "{{setting.smsCost}}" placeholder="eg. 0.65" >
               <label for="">Warning level</label>
-              <input class="u-full-width warningLevelSetting " type="number" name="warningLevel" value= "{{theWarningLevel}}" placeholder="eg. 30.00" class="warningLevel" >
+              <input class="u-full-width warningLevelSetting " type="number" name="warningLevel" value= "{{setting.warningLevel}}" placeholder="eg. 30.00" class="warningLevel" >
               <label for="">Critical level</label>
-              <input class="u-full-width criticalLevelSetting" type="number" name="criticalLevel" value= "{{theCriticalLevel}}" placeholder="eg. 65.00" >
+              <input class="u-full-width criticalLevelSetting" type="number" name="criticalLevel" value= "{{setting.criticalLevel}}" placeholder="eg. 65.00" >
               <button class="button-primary updateSettings" type="submit" name="button">Update settings</button>
 
               </form>

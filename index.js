@@ -4,6 +4,8 @@ const settingsBill = require('./settings-factory');
 const exphbs = require('express-handlebars');
 const settings = settingsBill();
 const app = express();
+const moment = require('moment');
+moment().format();
 app.use(express.static('public'));
 
 app.engine('handlebars', exphbs({ defaultLayout: 'main' }));
@@ -15,25 +17,26 @@ app.use(bodyParser.json())
 app.get('/', function (req, res) {
 
     res.render('index', {
-        callCost: settings.getCallCost(),
-        smsCost: settings.getSmsCost(),
-        theWarningLevel: settings.getWarningLevel(),
-        theCriticalLevel: settings.getCriticalLevel(),
+        setting: settings.getSettings(),
         allTotal: settings.allTotal(),
-        color : settings.totalClassName()
-       
+        color: settings.totalClassName()
+
     });
 });
 
 app.post('/settings', function (req, res) {
 
+    settings.setSettings({
+        callCost: req.body.callCost,
+        smsCost: req.body.smsCost,
+        warningLevel: req.body.warningLevel,
+        criticalLevel: req.body.criticalLevel
+    }),
+        //   smsCost: settings.setSmsCost1(req.body.smsCost),
+        //   warningLevel:  settings.setWarningLevel(req.body.warningLevel),
+        //    criticalLevel: settings.setCriticalLevel(req.body.criticalLevel)
 
-    settings.setCallCost({callCost: req.body.callCost}),
-        settings.setSmsCost1({smsCost: req.body.smsCost}),
-        settings.setWarningLevel({warningLevel: req.body.warningLevel}),
-        settings.setCriticalLevel({criticalLevel: req.body.criticalLevel})
-
-    res.redirect('/');
+        res.redirect('/');
 
 
 });
@@ -47,13 +50,23 @@ app.post('/action', function (req, res) {
 });
 
 app.get('/actions', function (req, res) {
-    res.render('actions', { actions: settings.actions() });
+    var actionsList = settings.actions();
+    for (let keys of actionsList) {
+        keys.ago = moment(keys.timeStamp).fromNow();
+    }
+
+    res.render('actions', { actions: actionsList });
+
 });
 
 
 app.get('/actions/:actionType', function (req, res) {
-    const actionType = req.params.actionType;
-    res.render('actions', { actions: settings.actionsFor(actionType) });
+    var actionsList = settings.actionsFor(req.params.actionType);
+    for (let keys of actionsList) {
+        keys.ago = moment(keys.timeStamp).fromNow();
+    }
+
+    res.render('actions', { actions: actionsList });
 
 });
 

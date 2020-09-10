@@ -1,53 +1,18 @@
 module.exports = function BillWithSettings() {
     var callCost;
     var smsCost;
-    var theWarningLevel;
+    var warningLevel;
     var theCriticalLevel;
 
-    var callCostTotal = 0;
-    var smsCostTotal = 0;
-    var sum = 0;
 
     var actionList = []
 
-
-    function setCallCost(set) {
-        return callCost = Number(set.callCost)
-    }
-
-    function getCallCost() {
-        return callCost;
-
-    }
-
-    function getSmsCost() {
-        return smsCost;
-    }
-
-    function setSmsCost1(setSms) {
-        smsCost = Number(setSms.smsCost)
-    }
-
-
-    function getGrandTotal() {
-        return callCostTotal + smsCostTotal;
-
-    }
-
-    function setWarningLevel(item) {
-        theWarningLevel = item.warningLevel;
-    }
-
-    function getWarningLevel() {
-        return theWarningLevel
-    }
-
-    function setCriticalLevel(item) {
-        theCriticalLevel = item.criticalLevel;
-    }
-
-    function getCriticalLevel() {
-        return theCriticalLevel
+    //updating my settings values 
+    function setSettings(set) {
+            callCost = Number(set.callCost),
+            smsCost = Number(set.smsCost),
+            warningLevel = set.warningLevel;
+            theCriticalLevel = set.criticalLevel;
 
     }
 
@@ -72,6 +37,16 @@ module.exports = function BillWithSettings() {
                     timestamp: new Date()
                 });
             }
+        }
+    }
+
+    function getSettings() {
+        return {
+            callCost: callCost,
+            smsCost: smsCost,
+            warningLevel: warningLevel,
+            criticalLevel: theCriticalLevel
+
         }
     }
 
@@ -119,10 +94,11 @@ module.exports = function BillWithSettings() {
             grandTotal: grandTotal().toFixed(2)
         }
     }
-    function getTotalCost() {
-        sum = callCostTotal + smsCostTotal;
-        return sum;
+
+    function hasReachedWarningLevel(){
+        return grandTotal() >= warningLevel && grandTotal() < theCriticalLevel;
     }
+
 
     function getTotalCallCost() {
         return callCostTotal;
@@ -137,7 +113,7 @@ module.exports = function BillWithSettings() {
             return "danger";
         }
 
-        if (grandTotal() >= theWarningLevel && grandTotal() < theCriticalLevel) {
+        if (hasReachedWarningLevel()) {
             return "warning";
         }
 
@@ -145,24 +121,20 @@ module.exports = function BillWithSettings() {
     }
 
     return {
-        setCallCost,
-        getCallCost,
-        getSmsCost,
-        setSmsCost1,
-        setWarningLevel,
-        getWarningLevel,
-        setCriticalLevel,
-        getCriticalLevel,
+        setSettings,
+        getSettings,
         checkCriticalLevel,
+        getSettings,
         recordAction,
         actionsFor,
         totals,
         allTotal,
-        getTotalCost,
         getTotalCallCost,
         getTotalSmsCost,
         totalClassName,
-        actions
+        actions,
+        hasReachedWarningLevel,
+        checkCriticalLevel
     }
 
 } 
