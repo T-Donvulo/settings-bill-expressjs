@@ -14,7 +14,7 @@ module.exports = function BillWithSettings() {
             warningLevel = set.warningLevel;
             theCriticalLevel = set.criticalLevel;
 
-    }
+    } 
 
     function checkCriticalLevel() {
         return grandTotal() >= theCriticalLevel;
